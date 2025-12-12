@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
-from app.helpers.database import get_db
+from app.helpers.databaseHandler import get_db
 from sqlalchemy.orm import Session
 from app.schemas.usersSchema import UserCreateSchema, UserLoginSchema
-from app.models.usersModels import Users
+from app.models.usersModel import Users
 from app.helpers.hashing import hashPassword, verifyPassword
 from app.helpers.jwt import create_jwt_token, get_current_user
 

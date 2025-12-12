@@ -2,9 +2,9 @@ import jwt
 from datetime import datetime, timedelta
 from app.helpers.config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_TOKEN_TIME_HOURS
 from fastapi import Depends, HTTPException, status
-from app.helpers.database import get_db
+from app.helpers.databaseHandler import get_db
 from fastapi.security import OAuth2PasswordBearer
-from app.models.usersModels import Users
+from app.models.usersModel import Users
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 

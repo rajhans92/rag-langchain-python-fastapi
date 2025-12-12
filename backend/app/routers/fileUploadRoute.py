@@ -1,14 +1,15 @@
 import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from app.helpers.database import get_db
+from app.helpers.databaseHandler import get_db
 from sqlalchemy.orm import Session
 from app.helpers.jwt import get_current_user
 from app.models.FileUploadModel import FileUploadModel
+from app.helpers.fileContentUploadInVectorDb import uploadFileToVectorDb
 
 route = APIRouter(prefix="/file-upload", tags=["file-upload"])
 
 @route.post("/multiple")
-def upload_multiple_files(files: list[UploadFile] = File(...), topic: str = Files(...) ,users = Depends(get_current_user), db: Session = Depends(get_db)):
+def upload_multiple_files(files: list[UploadFile] = File(...), topic: str = File(...) ,users = Depends(get_current_user), db: Session = Depends(get_db)):
 
     try:
         for uploader in files:

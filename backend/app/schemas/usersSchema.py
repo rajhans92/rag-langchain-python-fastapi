@@ -1,4 +1,4 @@
-from pydentic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field
 
 class UserCreateSchema(BaseModel):
     email: EmailStr = Field(..., min_length=3, max_length=100)

@@ -9,7 +9,6 @@ from app.helpers.exceptionHandler import (
     global_exception_handler
 )
 from app.routers import usersRoute, fileUploadRoute
-
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
 

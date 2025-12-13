@@ -6,12 +6,11 @@ from app.models.usersModel import Users
 from app.helpers.hashing import hashPassword, verifyPassword
 from app.helpers.jwt import create_jwt_token, get_current_user
 
-
 router = APIRouter(prefix="/users", tags=["users"])
 
 @router.post("/register")
 def registerUser(userRequest: UserCreateSchema, db: Session = Depends(get_db)):
-    userExist = db.query(Users).flter(Users.emial == userRequest.email).first()
+    userExist = db.query(Users).filter(Users.email == userRequest.email).first()
     if userExist:
         raise HTTPException(status_code=400, detail="Email already registered")
     
@@ -30,7 +29,7 @@ def registerUser(userRequest: UserCreateSchema, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def loginUser(userRequest: UserLoginSchema, db: Session = Depends(get_db)):
-    db_user = db.query(Users).flter(Users.email == userRequest.email).first()
+    db_user = db.query(Users).filter(Users.email == userRequest.email).first()
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid email")
     

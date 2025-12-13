@@ -1,13 +1,11 @@
-from sqlalchemy import Column, String, Integer, ForeignKey
-from sqlalchemy.orm import relationship
+# app/models/fileUploadModel.py
+from sqlalchemy import Column, Integer, String, ForeignKey
 from app.helpers.databaseHandler import Base
 
-class FileUploadModel(Base):
-    __tablename__ = "fileUploads"
+class FileUpload(Base):
+    __tablename__ = "fileUploads"   # table name can be anything; class name must match relationship string
 
     id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
+    fileName = Column(String(255), nullable=False)
     fileTopic = Column(String(100), nullable=False)
-    fileName = Column(String(200), unique=True, index=True, nullable=False)
-
-    user = relationship("Users", back_populates="files")
+    userId = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)

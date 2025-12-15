@@ -1,5 +1,5 @@
 import uuid
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, Form
 from app.helpers.databaseHandler import get_db
 from sqlalchemy.orm import Session
 from app.helpers.jwt import get_current_user
@@ -10,12 +10,12 @@ from app.models.usersModel import Users
 route = APIRouter(prefix="/file-upload", tags=["file-upload"])
 
 @route.post("/multiple")
-def upload_multiple_files(files: list[UploadFile] = File(...), topic: str = File(...) ,users: Users = Depends(get_current_user), db: Session = Depends(get_db)):
+async def upload_multiple_files(files: list[UploadFile] = File(...), topic: str = Form(...) ,users: Users = Depends(get_current_user), db: Session = Depends(get_db)):
 
     try:
         for uploader in files:
             unique_filename = f"{str(uuid.uuid4())}_{uploader.filename}"
-            contents = uploader.read().decode("utf-8")
+            contents = (await uploader.read()).decode("utf-8", errors="ignore")
             file_record = FileUpload(
                 userId=users.id,
                 fileTopic=topic,

@@ -14,6 +14,7 @@ route = APIRouter(prefix="/file-upload", tags=["file-upload"])
 async def upload_multiple_files(files: list[UploadFile] = File(...), topic: str = Form(...) ,users: Users = Depends(get_current_user), db: Session = Depends(get_db)):
 
     try:
+        file_count = len(files)
         file_record = Topics(
             userId=users.id,
             topic=topic
@@ -34,6 +35,6 @@ async def upload_multiple_files(files: list[UploadFile] = File(...), topic: str 
                 db.add(db_file)
                 db.commit()
                 db.refresh(db_file)
-        return {"message": "Files uploaded successfully", "topic": topic, "topicId": file_record.id}        
+        return {"message": "Files uploaded successfully", "topic": topic, "topicId": file_record.id, "fileCount": file_count}        
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")   

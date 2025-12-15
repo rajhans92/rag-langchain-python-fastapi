@@ -1,4 +1,4 @@
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from app.helpers.config import CHUNK_SIZE, CHUNK_OVERLAP, EMBADDING_MODEL, VECTOR_DB_PERSIST_DIR
@@ -48,5 +48,3 @@ def storeChunksInVectorDb(chunks: list, fileName: str, topic: str, topicId: int,
             for _ in chunks
         ]
     )
-
-    vectordb.persist()

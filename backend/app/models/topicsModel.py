@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from datetime import datetime
+from datetime import datetime, timezone
 from app.helpers.databaseHandler import Base
 
 class Topics(Base):
@@ -8,4 +8,4 @@ class Topics(Base):
     id = Column(Integer, primary_key=True, index=True)
     userId = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     topic = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))

@@ -20,3 +20,5 @@ CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 200))
 
 EMBADDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 VECTOR_DB_PERSIST_DIR = os.getenv("VECTOR_DB_PERSIST_DIR", "./chroma_db")
+
+VECTOR_DB_COLLECTION_NAME = os.getenv("VECTOR_DB_COLLECTION_NAME", "rag_documents")

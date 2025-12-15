@@ -57,13 +57,15 @@ def retriveDataFromVectorDB(question: str, userId: int, topicId: int) -> str:
             search_kwargs={
                 "k": 5,
                 "filter": {
-                    "user_id": userId,
-                    "topic_id": topicId
+                    "$and": [
+                        {"user_id": userId},
+                        {"topic_id": topicId}
+                    ]
                 }
             }
         )
         
-        docs = retriever.get_relevant_documents(question)
+        docs = retriever.invoke(question)
         print(f"Retrieved {len(docs)} documents from vector DB")
         print(docs)
         return  "\n\n".join([doc.page_content for doc in docs])

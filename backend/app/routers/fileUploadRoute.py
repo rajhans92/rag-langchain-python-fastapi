@@ -9,6 +9,7 @@ from app.helpers.fileContentUploadInVectorDb import uploadFileToVectorDb, retriv
 from app.models.usersModel import Users
 from app.schemas.chatSchema import ChatRequestSchema
 from app.models.chatHistory import ChatHistory
+from app.ai.chatAI import ragResponse
 
 route = APIRouter(prefix="/file-upload", tags=["file-upload"])
 
@@ -43,7 +44,7 @@ async def upload_multiple_files(files: list[UploadFile] = File(...), topic: str 
 
 
 @route.post("/chat")
-async def update_file_chat(requestData: ChatRequestSchema, users: Users = Depends(get_current_user)):
+async def update_file_chat(requestData: ChatRequestSchema, users: Users = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
         userId = users.id
         topicId = requestData.topicId
@@ -52,6 +53,26 @@ async def update_file_chat(requestData: ChatRequestSchema, users: Users = Depend
         if not context:
             raise HTTPException(status_code=404, detail="No relevant data found for the question.")
         
-        
+        chat_history_entry = ChatHistory(
+            userId=userId,
+            topicId=topicId,
+            role="user",        
+            message=question
+        )
+        db.add(chat_history_entry)
+        db.commit()
+        db.refresh(chat_history_entry)
+        answer = ragResponse(question, context)
+        chat_history_entry_ai = ChatHistory(
+            userId=userId,
+            topicId=topicId,
+            role="assistant",        
+            message=answer      
+        )
+        db.add(chat_history_entry_ai)
+        db.commit()
+        db.refresh(chat_history_entry_ai)
+
+        return {"message": answer, "topicId": topicId, "userId": userId}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")

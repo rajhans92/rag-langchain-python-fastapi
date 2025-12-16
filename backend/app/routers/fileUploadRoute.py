@@ -10,6 +10,7 @@ from app.models.usersModel import Users
 from app.schemas.chatSchema import ChatRequestSchema
 from app.models.chatHistory import ChatHistory
 from app.ai.chatAI import ragResponse
+from app.helpers.fileParser import fileContentParser
 
 route = APIRouter(prefix="/file-upload", tags=["file-upload"])
 
@@ -27,7 +28,9 @@ async def upload_multiple_files(files: list[UploadFile] = File(...), topic: str 
         db.refresh(file_record)
         for uploader in files:
             unique_filename = f"{str(uuid.uuid4())}_{uploader.filename}"
-            contents = (await uploader.read()).decode("utf-8", errors="ignore")
+            contents = await fileContentParser(uploader)
+            print(f"File content parsed for {contents}")
+            # contents = (await uploader.read()).decode("utf-8", errors="ignore")
             if not uploadFileToVectorDb(contents, unique_filename, topic,file_record.id,users.id):
                 raise HTTPException(status_code=500, detail="Error in uploading file to vector DB")
             else:

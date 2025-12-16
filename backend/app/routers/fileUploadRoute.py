@@ -29,7 +29,7 @@ async def upload_multiple_files(files: list[UploadFile] = File(...), topic: str 
         for uploader in files:
             unique_filename = f"{str(uuid.uuid4())}_{uploader.filename}"
             contents = await fileContentParser(uploader)
-            print(f"File content parsed for {contents}")
+            # print(f"File content parsed for {contents}")
             # contents = (await uploader.read()).decode("utf-8", errors="ignore")
             if not uploadFileToVectorDb(contents, unique_filename, topic,file_record.id,users.id):
                 raise HTTPException(status_code=500, detail="Error in uploading file to vector DB")

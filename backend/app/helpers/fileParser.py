@@ -1,5 +1,6 @@
 import os
 import io
+import pandas as pd
 from fastapi import HTTPException, UploadFile
 from pypdf import PdfReader
 from docx import Document
@@ -47,4 +48,16 @@ def parse_docx(content: bytes) -> str:
 
 
 def parse_csv(content: bytes) -> str:
-    pass
+    try:
+        df = pd.read_csv(io.BytesIO(content))
+        text_rows = []
+        for _, row in df.iterrows():
+            row_text = " | ".join(
+                f"{col}: {row[col]}" for col in df.columns if pd.notna(row[col])
+            )
+            text_rows.append(row_text)
+
+        return "\n".join(text_rows)
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error parsing CSV file: {str(e)}")

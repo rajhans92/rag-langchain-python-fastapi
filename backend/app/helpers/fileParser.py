@@ -2,6 +2,7 @@ import os
 import io
 from fastapi import HTTPException, UploadFile
 from pypdf import PdfReader
+from docx import Document
 
 async def fileContentParser(file: UploadFile)-> str:
     try:
@@ -38,7 +39,12 @@ def parse_pdf(content: bytes) -> str:
         raise HTTPException(status_code=400, detail=f"Error parsing PDF file: {str(e)}")
 
 def parse_docx(content: bytes) -> str:
-    pass
+    try:
+        doc = Document(io.BytesIO(content))
+        return "\n".join(p.text for p in doc.paragraphs)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error parsing PDF file: {str(e)}")
+
 
 def parse_csv(content: bytes) -> str:
     pass
